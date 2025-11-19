@@ -1,11 +1,8 @@
-package com.example.demo;
+package com.example.demo.util;
 
 import java.util.*;
-import java.io.*;
 
 public final class JsonUtils {
-
-    private JsonUtils() {}
 
     // ===========================================================
     //  Public API

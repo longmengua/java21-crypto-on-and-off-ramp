@@ -1,29 +1,98 @@
-package com.example.demo;
+package com.example.demo.service;
 
-import java.util.*;
+import com.example.demo.config.AlchemyPayConfig;
+import com.example.demo.util.AchSign;
+import com.example.demo.util.JsonUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-public class AlchemyPayOrder {
-    public static String createOrder() throws Exception {
-        long ts = System.currentTimeMillis();
-        String tsStr = String.valueOf(ts);
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.util.HashMap;
+import java.util.Map;
 
-        String sign = APSignUtil.sha1Hex(APConfig.APP_ID + APConfig.APP_SECRET + tsStr);
+/**
+ * AlchemyPay 訂單服務
+ * 支援建立訂單與查詢訂單
+ */
+@Service
+public class AlchemyPayOrderService {
+    // 建立單例 HttpClient 避免每次都創建
+    private final HttpClient httpClient = HttpClient.newHttpClient();
 
-        Map<String,Object> order = new LinkedHashMap<>();
-        order.put("merchantOrderNo","ORDER" + ts);
-        order.put("name","Test Item");
-        order.put("amount",1000);
-        order.put("fiat","USD");
-        order.put("targetFiat","USDT");
-        order.put("payWayCode","PAYCODE_EXAMPLE");
-        order.put("callbackUrl","https://your.callback/notify");
-        order.put("redirectUrl","https://your.store/success");
-        order.put("failRedirectUrl","https://your.store/fail");
+    @Autowired
+    private AlchemyPayConfig alchemyPayConfig;
 
-        String bodyJson = JsonUtils.toJson(order);
-        String bodyMd5 = APSignUtil.md5Hex(bodyJson + APConfig.APP_SECRET);
+    /**
+     * 建立訂單
+     * @return API 原始回應 JSON
+     *
+     * | payWayCode | 支付方式                    |
+     * | ---------- | ----------------------- |
+     * | 501        | 信用卡 Visa/MasterCard（示例） |
+     * | 502        | 支付寶                     |
+     * | 503        | 銀行轉帳                    |
+     * | …          | …                       |
+     */
+    public String createOrder(Map<String, Object> params, String timestamp) throws Exception {
+        // --------- API 基本信息 ----------
+        String path = "/open/api/v4/merchant/trade/create";
+        String method = "POST";
 
-        String url = APConfig.API_BASE + "/nft/openapi/trade/order";
-        return APIClient.post(url, bodyJson, APConfig.APP_ID, sign, APConfig.ACCESS_TOKEN, tsStr, bodyMd5);
+        // --------- 生成簽名 ----------
+        String sign = AchSign.apiSign(timestamp, method, path, params, alchemyPayConfig.getAppSecret());
+
+        // --------- 發送 POST 請求 ----------
+        String jsonBody = JsonUtils.toJson(params);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(alchemyPayConfig.getApiBase() + path))
+                .header("Content-Type", "application/json")
+                .header("appId", alchemyPayConfig.getAppId())
+                .header("access-token", alchemyPayConfig.getAccessToken())
+                .header("timestamp", timestamp)
+                .header("sign", sign)
+                .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        return response.body();
+    }
+
+    /**
+     * 查詢訂單狀態
+     * @param merchantOrderNo 商戶訂單號
+     * @return API 原始回應 JSON
+     */
+    public String queryOrder(String merchantOrderNo) throws Exception {
+        String path = "/open/api/v4/merchant/trade/query";
+        String method = "POST"; // API 說明為 POST
+        String timestamp = String.valueOf(System.currentTimeMillis());
+
+        Map<String, Object> bodyMap = new HashMap<>();
+        bodyMap.put("merchantOrderNo", merchantOrderNo);
+
+        // 生成簽名
+        String sign = AchSign.apiSign(timestamp, method, path, bodyMap, alchemyPayConfig.getAppSecret());
+
+        // 發送 POST 請求
+        String jsonBody = JsonUtils.toJson(bodyMap);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(alchemyPayConfig.getApiBase() + path))
+                .header("Content-Type", "application/json")
+                .header("appId", alchemyPayConfig.getAppId())
+                .header("access-token", alchemyPayConfig.getAccessToken())
+                .header("timestamp", timestamp)
+                .header("sign", sign)
+                .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        return response.body();
     }
 }

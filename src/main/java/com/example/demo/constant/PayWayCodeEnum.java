@@ -1,30 +1,23 @@
 package com.example.demo.constant;
 
+import lombok.Getter;
+
 /**
  * 支付方式枚舉對照 AlchemyPay payWayCode
  */
-public enum PayWayCode {
+@Getter
+public enum PayWayCodeEnum {
 
-    VISA("501", "信用卡 Visa/MasterCard"),
-    ALIPAY("502", "支付寶"),
-    BANK_TRANSFER("503", "銀行轉帳"),
-    PAYPAL("504", "PayPal"),
-    // 可根據官方文件補充更多
+    VISA("10001", "Visa/Master Card"),
+    ALIPAY("501", "Apple Pay"),
+    BANK_TRANSFER("701", "Google Pay"),
     ;
 
     private final String code;
     private final String name;
 
-    PayWayCode(String code, String name) {
+    PayWayCodeEnum(String code, String name) {
         this.code = code;
         this.name = name;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public String getName() {
-        return name;
     }
 }
