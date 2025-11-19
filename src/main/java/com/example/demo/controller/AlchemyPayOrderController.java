@@ -31,16 +31,16 @@ public class AlchemyPayOrderController {
             Map<String, Object> params = new HashMap<>();
 
             // 必填
-            params.put("side", TradeSide.BUY.getCode()); // 固定 BUY
+            params.put("side", "BUY"); // 固定 BUY
             params.put("cryptoCurrency", "USDT"); // 加密貨幣
             params.put("address", "0x632b659467e8f0e16c8df49fadf4b620286b43f6"); // 收款地址
-            params.put("network", CryptoNetwork.BSC.getCode()); // 網路
+            params.put("network", "BSC"); // 網路
             params.put("fiatCurrency", "USD"); // 法幣
-            params.put("amount", 100.00); // 法幣金額
             params.put("merchantOrderNo", "ORD" + timestamp + UUID.randomUUID().toString().substring(0,8)); // 商戶自定義的訂單號，需要保證它在系統裡是唯一的
+            params.put("amount", 100.00); // 法幣金額
             params.put("depositType", 2); // 固定值 2
-            params.put("payWayCode", PayWayCodeEnum.VISA.getCode()); // 支付方式
-            params.put("timestamp", timestamp);
+            params.put("payWayCode", "10001"); // 支付方式
+//            params.put("timestamp", timestamp);
 
             // 非必填
 //            params.put("redirectUrl", alchemyPayConfig.getCallbackDomain() + "/alchemypay/success"); // 前端成功跳轉頁面
