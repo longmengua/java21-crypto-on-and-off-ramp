@@ -29,7 +29,7 @@ public class AlchemyPayConfig {
     /**
      * Access Token，可放固定值或由後端配置
      */
-    @Value("${alchemypay.accessToken:demo}")
+    @Value("${alchemypay.accessToken:ACH7084714072@ACH@c+G1UnaozACJuboWub8nug==@PAY@YuyyGJ/PGErpmIG27wXbzLZXM5pE/a6o987wGZz1abw=@IO@czAJ1TXnlD8kCY1MdGLXJYuinFE4SB+TcVkrS8IUsWC9UOVId+wxNpZrM18sKlIoNmHp5OQFtfLf14+zzURrHA==}")
     private String accessToken;
 
     /**

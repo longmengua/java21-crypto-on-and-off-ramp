@@ -1,9 +1,6 @@
 package com.example.demo.controller;
 
 import com.example.demo.config.AlchemyPayConfig;
-import com.example.demo.constant.CryptoNetwork;
-import com.example.demo.constant.PayWayCodeEnum;
-import com.example.demo.constant.TradeSide;
 import com.example.demo.service.AlchemyPayOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +11,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/order")
-public class AlchemyPayOrderController {
+public class OrderController {
     @Autowired
     private AlchemyPayOrderService alchemyPayOrderService;
     @Autowired
@@ -23,7 +20,7 @@ public class AlchemyPayOrderController {
     /**
      * 建立新訂單
      */
-    @PostMapping("/create")
+    @PostMapping("/alchemypay/create")
     public String createOrder() {
         String timestamp = String.valueOf(System.currentTimeMillis());
 
@@ -37,7 +34,7 @@ public class AlchemyPayOrderController {
             params.put("network", "BSC"); // 網路
             params.put("fiatCurrency", "USD"); // 法幣
             params.put("merchantOrderNo", "ORD" + timestamp + UUID.randomUUID().toString().substring(0,8)); // 商戶自定義的訂單號，需要保證它在系統裡是唯一的
-            params.put("amount", 100.00); // 法幣金額
+            params.put("amount", 10); // 法幣金額
             params.put("depositType", 2); // 固定值 2
             params.put("payWayCode", "10001"); // 支付方式
 //            params.put("timestamp", timestamp);
@@ -58,7 +55,7 @@ public class AlchemyPayOrderController {
     /**
      * 查詢訂單狀態
      */
-    @GetMapping("/query")
+    @GetMapping("/alchemypay/query")
     public String queryOrder(@RequestParam String merchantOrderNo) {
         try {
             return alchemyPayOrderService.queryOrder(merchantOrderNo);
