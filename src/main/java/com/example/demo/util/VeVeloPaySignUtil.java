@@ -16,7 +16,7 @@ public class VeVeloPaySignUtil {
     // 固定法幣、虛擬幣、網絡
     private static final String FIXED_FIAT = VeveloPayFiatCoin.USD.getCode();
     private static final String FIXED_CRYPTO = "USDT";
-    private static final String FIXED_NETWORK = VeVeloPayNetwork.BNB.getNetworkName();
+    private static final String FIXED_NETWORK = VeVeloPayNetwork.TRON.getNetworkName();
 
     /**
      * Build iframe URL for VeVeloPay Widget
@@ -42,14 +42,23 @@ public class VeVeloPaySignUtil {
 
         // Build final URL
         return String.format(
-                "https://sandbox-env.openc.pro/widget-page/?widgetId=%s&fixCryptoCoin=true&&timestamp=%d&tradeType=%s&fiatCoin=%s&cryptoCoin=%s&walletAddress=%s&network=%s&sign=%s",
+                "https://sandbox-env.openc.pro/widget-page/?" +
+                        "widgetId=%s" +
+                        "&network=%s" +
+                        "&fixCryptoCoin=true" +
+                        "&cryptoCoin=%s" +
+                        "&timestamp=%d" +
+                        "&tradeType=%s" +
+                        "&fiatCoin=%s" +
+                        "&walletAddress=%s" +
+                        "&sign=%s",
                 WIDGET_ID,
+                FIXED_NETWORK,
+                FIXED_CRYPTO,
                 timestamp,
                 tradeType,
                 FIXED_FIAT,
-                FIXED_CRYPTO,
                 walletAddress,
-                FIXED_NETWORK,
                 signature
         );
     }
@@ -82,7 +91,7 @@ public class VeVeloPaySignUtil {
 
     // Example usage
     public static void main(String[] args) {
-        String walletAddress = "0x632b659467e8f0e16c8df49fadf4b620286b43f6";
+        String walletAddress = "TYyesm7PGkpfjeTRCbVbemfPcW7na4bYsY";
         String tradeType = "buy";
 
         String url = buildWidgetUrl(walletAddress, tradeType);

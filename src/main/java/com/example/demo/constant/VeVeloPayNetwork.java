@@ -17,7 +17,7 @@ public enum VeVeloPayNetwork {
     ALGORAND("Algorand", "ALGO 主網"),
     TRON("Tron", "TRX 主網"),
     SOLANA("Solana", "SOL 主網"),
-    BNB("BNB BeaconChain", "BNB 主網"),
+    BNB("Binance Smart Chain", "BNB 主網"),
     HEDERA("Hedera Hashgraph", "HBAR 主網"),
     KLAYTN("Klaytn", "KLAY 主網"),
     FILECOIN("Filecoin", "FIL 主網"),
