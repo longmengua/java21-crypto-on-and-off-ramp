@@ -16,7 +16,7 @@ public class VeVeloPayWebhookController {
         try {
             // 簽名驗證
             String receivedSign = (String) payload.get("sign");
-            String calculatedSign = VeVeloPaySignUtil.HMACSHA256(
+            String calculatedSign = VeVeloPaySignUtil.apiSign(
                     VeVeloPaySignUtil.mapSort2Str(payload), secretKey
             );
 

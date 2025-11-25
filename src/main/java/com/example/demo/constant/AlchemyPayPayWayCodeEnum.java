@@ -6,7 +6,7 @@ import lombok.Getter;
  * 支付方式枚舉對照 AlchemyPay payWayCode
  */
 @Getter
-public enum PayWayCodeEnum {
+public enum AlchemyPayPayWayCodeEnum {
 
     VISA("10001", "Visa/Master Card"),
     ALIPAY("501", "Apple Pay"),
@@ -16,7 +16,7 @@ public enum PayWayCodeEnum {
     private final String code;
     private final String name;
 
-    PayWayCodeEnum(String code, String name) {
+    AlchemyPayPayWayCodeEnum(String code, String name) {
         this.code = code;
         this.name = name;
     }

@@ -6,7 +6,7 @@ import lombok.Getter;
  * 支付網路枚舉（Crypto acquiring network）
  */
 @Getter
-public enum CryptoNetwork {
+public enum AlchemyPayNetwork {
 
     ETH("ETH", "以太坊"),
     BSC("BSC", "幣安智能鏈"),
@@ -19,7 +19,7 @@ public enum CryptoNetwork {
     private final String code;
     private final String name;
 
-    CryptoNetwork(String code, String name) {
+    AlchemyPayNetwork(String code, String name) {
         this.code = code;
         this.name = name;
     }
