@@ -1,8 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.config.AlchemyPayConfig;
-import com.example.demo.util.AchSign;
-import com.example.demo.util.JsonUtils;
+import com.example.demo.util.JsonUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +14,9 @@ import java.util.Map;
  * AlchemyPay 支付回調 Controller
  */
 @RestController
-@RequestMapping("/")
+@RequestMapping("/alchemypay")
 @Slf4j
-public class AlchemyPayCallbackController {
+public class AlchemyPayWebhookController {
     @Autowired
     private AlchemyPayConfig alchemyPayConfig;
 
@@ -25,7 +24,7 @@ public class AlchemyPayCallbackController {
      * 支付回調接口
      * AlchemyPay 將支付結果 POST 到此接口
      */
-    @PostMapping("/alchemypay/callback")
+    @PostMapping("/callback")
     public String alchemyPayCallback(HttpServletRequest request) {
         try {
             // --------- 1. 讀取請求 body ----------
@@ -45,7 +44,7 @@ public class AlchemyPayCallbackController {
 
             if (timestamp == null || sign == null) {
                 log.warn("Missing timestamp or sign header");
-                return JsonUtils.toJson(Map.of(
+                return JsonUtil.toJson(Map.of(
                         "success", false,
                         "returnCode", "400",
                         "returnMsg", "Missing timestamp or sign"
@@ -66,14 +65,14 @@ public class AlchemyPayCallbackController {
 //            }
 
             // --------- 4. 處理回調邏輯 ----------
-            Map<String, Object> callbackData = (Map<String, Object>) JsonUtils.parse(body);
+            Map<String, Object> callbackData = (Map<String, Object>) JsonUtil.parse(body);
             // TODO: 根據業務邏輯更新訂單狀態
             String merchantOrderNo = (String) callbackData.get("merchantOrderNo");
             String orderStatus = (String) callbackData.get("status");
             log.info("Order {} callback status: {}", merchantOrderNo, orderStatus);
 
             // --------- 5. 返回成功 ----------
-            return JsonUtils.toJson(Map.of(
+            return JsonUtil.toJson(Map.of(
                     "success", true,
                     "returnCode", "0000",
                     "returnMsg", "SUCCESS"
@@ -81,7 +80,7 @@ public class AlchemyPayCallbackController {
 
         } catch (Exception e) {
             log.error("Error handling AlchemyPay callback", e);
-            return JsonUtils.toJson(Map.of(
+            return JsonUtil.toJson(Map.of(
                     "success", false,
                     "returnCode", "500",
                     "returnMsg", "Internal error"
@@ -104,12 +103,12 @@ public class AlchemyPayCallbackController {
 //        }
 //    }
 
-    @GetMapping("/alchemypay/success")
+    @GetMapping("/success")
     public String success(HttpServletRequest request) {
         return "success";
     }
 
-    @GetMapping("/alchemypay/fail")
+    @GetMapping("/fail")
     public String fail(HttpServletRequest request) {
         return "fail";
     }

@@ -13,7 +13,7 @@ import java.util.*;
  * 用於生成 API 請求簽名（HMAC-SHA256 + Base64）
  * 並對參數進行去空、排序、JSON 序列化處理
  */
-public class AchSign {
+public class AchSignUtil {
 
     // ================= API 簽名 =================
 
@@ -78,7 +78,7 @@ public class AchSign {
         Map<String, Object> sorted = sortMap(filtered);
 
         // JSON 序列化（假設你有 JsonUtils 工具）
-        return JsonUtils.toJson(sorted);
+        return JsonUtil.toJson(sorted);
     }
 
     /**

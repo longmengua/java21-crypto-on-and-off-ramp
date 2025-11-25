@@ -1,8 +1,8 @@
 package com.example.demo.controller;
 
 import com.example.demo.config.AlchemyPayConfig;
-import com.example.demo.util.AchSign;
-import com.example.demo.util.JsonUtils;
+import com.example.demo.util.AchSignUtil;
+import com.example.demo.util.JsonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,7 +42,7 @@ public class AlchemyPayController {
             return ResponseEntity.ok(resp);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(JsonUtils.toJson(Map.of("error", e.getMessage())));
+                    .body(JsonUtil.toJson(Map.of("error", e.getMessage())));
         }
     }
 
@@ -57,7 +57,7 @@ public class AlchemyPayController {
             return ResponseEntity.ok(resp);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(JsonUtils.toJson(Map.of("error", e.getMessage())));
+                    .body(JsonUtil.toJson(Map.of("error", e.getMessage())));
         }
     }
 
@@ -75,7 +75,7 @@ public class AlchemyPayController {
 
             if (!hasEmail && !hasUid) {
                 // 回傳 API 所需的錯誤碼與訊息結構（3108: Missing Parameter）
-                return ResponseEntity.badRequest().body(JsonUtils.toJson(Map.of(
+                return ResponseEntity.badRequest().body(JsonUtil.toJson(Map.of(
                         "success", false,
                         "returnCode", "3108",
                         "returnMsg", "Missing Parameter: must provide email or uid"
@@ -86,10 +86,10 @@ public class AlchemyPayController {
             String timestamp = String.valueOf(System.currentTimeMillis());
 
             // 這裡把 body map 傳給簽名函式（假設 AchSign.apiSign 會根據 method 與傳入的 map 處理 POST body 的簽名）
-            String sign = AchSign.apiSign(timestamp, "POST", requestPath, body, alchemyPayConfig.getAppSecret());
+            String sign = AchSignUtil.apiSign(timestamp, "POST", requestPath, body, alchemyPayConfig.getAppSecret());
 
             String url = alchemyPayConfig.getApiBase() + requestPath;
-            String bodyJson = JsonUtils.toJson(body);
+            String bodyJson = JsonUtil.toJson(body);
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(url))
@@ -105,7 +105,7 @@ public class AlchemyPayController {
             return ResponseEntity.status(response.statusCode()).body(response.body());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(JsonUtils.toJson(Map.of("error", e.getMessage())));
+                    .body(JsonUtil.toJson(Map.of("error", e.getMessage())));
         }
     }
 
@@ -119,7 +119,7 @@ public class AlchemyPayController {
         String timestamp = String.valueOf(System.currentTimeMillis());
 
         // 生成簽名：GET 的 body 為 null 或空 string
-        String sign = AchSign.apiSign(timestamp, "GET", requestPath, null, alchemyPayConfig.getAppSecret());
+        String sign = AchSignUtil.apiSign(timestamp, "GET", requestPath, null, alchemyPayConfig.getAppSecret());
 
         String url = alchemyPayConfig.getApiBase() + requestPath;
 

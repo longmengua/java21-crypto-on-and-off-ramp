@@ -1,8 +1,8 @@
 package com.example.demo.service;
 
 import com.example.demo.config.AlchemyPayConfig;
-import com.example.demo.util.AchSign;
-import com.example.demo.util.JsonUtils;
+import com.example.demo.util.AchSignUtil;
+import com.example.demo.util.JsonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -42,10 +42,10 @@ public class AlchemyPayOrderService {
         String method = "POST";
 
         // --------- 生成簽名 ----------
-        String sign = AchSign.apiSign(timestamp, method, path, params, alchemyPayConfig.getAppSecret());
+        String sign = AchSignUtil.apiSign(timestamp, method, path, params, alchemyPayConfig.getAppSecret());
 
         // --------- 發送 POST 請求 ----------
-        String jsonBody = JsonUtils.toJson(params);
+        String jsonBody = JsonUtil.toJson(params);
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(alchemyPayConfig.getApiBase() + path))
@@ -76,10 +76,10 @@ public class AlchemyPayOrderService {
         bodyMap.put("merchantOrderNo", merchantOrderNo);
 
         // 生成簽名
-        String sign = AchSign.apiSign(timestamp, method, path, bodyMap, alchemyPayConfig.getAppSecret());
+        String sign = AchSignUtil.apiSign(timestamp, method, path, bodyMap, alchemyPayConfig.getAppSecret());
 
         // 發送 POST 請求
-        String jsonBody = JsonUtils.toJson(bodyMap);
+        String jsonBody = JsonUtil.toJson(bodyMap);
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(alchemyPayConfig.getApiBase() + path))
