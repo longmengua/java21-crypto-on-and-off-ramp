@@ -33,10 +33,13 @@ public class VeVeloPaySignUtil {
         data.put("timestamp", timestamp);
         data.put("tradeType", tradeType);
         data.put("walletAddress", walletAddress);
+        data.put("cryptoCoin", FIXED_CRYPTO);
+        data.put("fiatCoin", FIXED_FIAT);
 
         String sortedStr = mapSort2Str(data);
-        String signature = apiSign(sortedStr, SECRET_KEY);
+        System.out.println("sortedStr: " + sortedStr);
 
+        String signature = apiSign(sortedStr, SECRET_KEY);
         System.out.println("signature: " + signature);
 
         // Build final URL
@@ -50,7 +53,7 @@ public class VeVeloPaySignUtil {
                         "&tradeType=%s" +
                         "&fiatCoin=%s" +
                         "&walletAddress=%s" +
-                        "&sign=%s",
+                        "&authSign=%s",
                 WIDGET_ID,
                 FIXED_NETWORK,
                 FIXED_CRYPTO,
